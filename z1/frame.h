@@ -20,6 +20,10 @@
 #define BLACK 0x0000
 #define YELLOW (RED+GREEN)
 
+template <class T> int swap(T *v1, T *v2);
+template <class T> inline T saturate(T in, T low, T high);
+int get_colour(const std::string c);
+
 class Frame {
 public:
   std::string bckg;
