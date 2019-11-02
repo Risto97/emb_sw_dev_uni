@@ -10,7 +10,7 @@
 int parse_line(const std::string line, Frame *fb) {
   std::regex command_reg("^\\s*(BCKG|LINE_H|LINE_V|RECT)\\s*:");
   std::regex line_reg(
-      "\\s*(?::\\s*)(\\d*)\\s*,\\s*(\\d*)\\s*,\\s(\\d*)\\s*;\\s*(\\w*)$");
+      "\\s*(?::\\s*)(\\d+)\\s*,\\s*(\\d+)\\s*,\\s(\\d+)\\s*;\\s*(\\w+)\\s*$");
   std::smatch m;
 
   if (!std::regex_search(line, m, command_reg)) {
@@ -19,10 +19,10 @@ int parse_line(const std::string line, Frame *fb) {
   }
 
   if (m[1].compare("BCKG") == 0) {
-    std::regex bckg_reg("\\b\\w*$");
+    std::regex bckg_reg("\\b(\\w+)\\s*$");
     std::regex_search(line, m, bckg_reg);
 
-    fb->change_background(m[0]);
+    fb->change_background(m[1]);
     return 1;
   }
   if (m[1].compare("LINE_H") == 0) {
@@ -44,8 +44,8 @@ int parse_line(const std::string line, Frame *fb) {
   }
 
   if (m[1].compare("RECT") == 0) {
-    std::regex rect_reg("\\s*(?::\\s*)(\\d*)\\s*,\\s*(\\d*)\\s*,\\s*(\\d*)\\s*,"
-                        "\\s*(\\d*)\\s*;\\s*(\\w*)$");
+    std::regex rect_reg("\\s*(?::\\s*)(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,"
+                        "\\s*(\\d+)\\s*;\\s*(\\w+)\\s*$");
     if (!std::regex_search(line, m, rect_reg)) {
       return -1;
     }
