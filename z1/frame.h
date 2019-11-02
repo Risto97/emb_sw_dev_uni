@@ -30,14 +30,19 @@ public:
   std::vector<LINE_H> lines_h;
   std::vector<LINE_V> lines_v;
   std::vector<RECT> rects;
-
-  // TODO Allocate dynamically to avoid filling stack
-  unsigned int buffer[VGA_Y][VGA_X];
+  int *buffer;
 
   Frame() : bckg("BLACK"){
-    memset(buffer, 0, sizeof(buffer[0][0]) * VGA_Y * VGA_X);
+#ifdef DEBUG
+    buffer = new int[VGA_X*VGA_Y];
+    memset(buffer, 0, sizeof(buffer[0]) * VGA_Y * VGA_X);
+#else
+#endif
   }
 
+  ~Frame(){
+    delete []buffer;
+  }
   void print();
 
   int add_line_h(int x1, int x2, int y, std::string colour);
@@ -51,7 +56,7 @@ public:
   void draw_line_v(const LINE_V line);
   void draw_rect(const RECT r);
 
-  int send_frame(const std::string fn);
+  int send_frame();
   void dump_ppm(const std::string fn);
 
 };

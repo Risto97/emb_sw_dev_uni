@@ -97,7 +97,7 @@ void Frame::change_background(const std::string b) {
   int colour = get_colour(b);
   for (int y = 0; y < VGA_Y; y++) {
     for (int x = 0; x < VGA_X; x++) {
-      buffer[y][x] = colour;
+      buffer[(y*VGA_X) + x] = colour;
     }
   }
   redraw_shapes();
@@ -115,14 +115,14 @@ void Frame::redraw_shapes() {
 void Frame::draw_line_h(const LINE_H line) {
   int colour = get_colour(line.colour);
   for (int x = line.x1; x < line.x2; x++) {
-    buffer[line.y][x] = colour;
+    buffer[(line.y*VGA_X) + x] = colour;
   }
 }
 
 void Frame::draw_line_v(const LINE_V line) {
   int colour = get_colour(line.colour);
   for (int y = line.y1; y < line.y2; y++) {
-    buffer[y][line.x] = colour;
+    buffer[(y*VGA_X) + line.x] = colour;
   }
 }
 
@@ -130,12 +130,12 @@ void Frame::draw_rect(const RECT r) {
   int colour = get_colour(r.colour);
   for (int y = r.y1; y < r.y2; y++) {
     for (int x = r.x1; x < r.x2; x++) {
-      buffer[y][x] = colour;
+      buffer[(y*VGA_X) + x] = colour;
     }
   }
 }
 
-int Frame::send_frame(const std::string fn) {
+int Frame::send_frame() {
   int fd;
   int *p;
   fd = open("/dev/vga_dma", O_RDWR | O_NDELAY);
@@ -166,13 +166,13 @@ void Frame::dump_ppm(const std::string fn) {
       r = 0;
       g = 0;
       b = 0;
-      if (buffer[y][x] == RED)
+      if (buffer[(VGA_X*y) + x] == RED)
         r = 255;
-      if (buffer[y][x] == BLUE)
+      if (buffer[(VGA_X*y) + x] == BLUE)
         b = 255;
-      if (buffer[y][x] == GREEN)
+      if (buffer[(VGA_X*y) + x] == GREEN)
         g = 255;
-      if (buffer[y][x] == YELLOW) {
+      if (buffer[(VGA_X*y) + x] == YELLOW){
         r = 255;
         g = 255;
       }
