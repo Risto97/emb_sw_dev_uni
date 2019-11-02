@@ -89,8 +89,6 @@ int main(int argc, char *argv[]) {
   frame.print();
   frame.dump_ppm("picture.ppm");
   system("feh picture.ppm");
-#else
-  frame.send_frame();
 #endif
 
   return 0;

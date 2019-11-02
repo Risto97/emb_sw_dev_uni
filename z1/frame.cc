@@ -1,4 +1,5 @@
 #include "frame.h"
+#include <algorithm>
 #include <fstream>
 
 template <class T> int swap(T *v1, T *v2) {
@@ -95,11 +96,7 @@ int Frame::add_rect(int x1, int x2, int y1, int y2, std::string colour) {
 void Frame::change_background(const std::string b) {
   bckg = b;
   int colour = get_colour(b);
-  for (int y = 0; y < VGA_Y; y++) {
-    for (int x = 0; x < VGA_X; x++) {
-      buffer[(y*VGA_X) + x] = colour;
-    }
-  }
+  std::fill_n(buffer, VGA_Y * VGA_X, colour);
   redraw_shapes();
 }
 
@@ -115,14 +112,14 @@ void Frame::redraw_shapes() {
 void Frame::draw_line_h(const LINE_H line) {
   int colour = get_colour(line.colour);
   for (int x = line.x1; x < line.x2; x++) {
-    buffer[(line.y*VGA_X) + x] = colour;
+    buffer[(line.y * VGA_X) + x] = colour;
   }
 }
 
 void Frame::draw_line_v(const LINE_V line) {
   int colour = get_colour(line.colour);
   for (int y = line.y1; y < line.y2; y++) {
-    buffer[(y*VGA_X) + line.x] = colour;
+    buffer[(y * VGA_X) + line.x] = colour;
   }
 }
 
@@ -130,26 +127,8 @@ void Frame::draw_rect(const RECT r) {
   int colour = get_colour(r.colour);
   for (int y = r.y1; y < r.y2; y++) {
     for (int x = r.x1; x < r.x2; x++) {
-      buffer[(y*VGA_X) + x] = colour;
+      buffer[(y * VGA_X) + x] = colour;
     }
-  }
-}
-
-int Frame::send_frame() {
-  int fd;
-  int *p;
-  fd = open("/dev/vga_dma", O_RDWR | O_NDELAY);
-  if (fd < 0) {
-    printf("Cannot open /dev/vga for write\n");
-    return -1;
-  }
-  p = (int *)mmap(0, MAX_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  memcpy(p, buffer, MAX_MMAP_SIZE);
-  munmap(p, MAX_MMAP_SIZE);
-  close(fd);
-  if (fd < 0) {
-    printf("Cannot close /dev/vga for write\n");
-    return -1;
   }
 }
 
@@ -166,13 +145,13 @@ void Frame::dump_ppm(const std::string fn) {
       r = 0;
       g = 0;
       b = 0;
-      if (buffer[(VGA_X*y) + x] == RED)
+      if (buffer[(VGA_X * y) + x] == RED)
         r = 255;
-      if (buffer[(VGA_X*y) + x] == BLUE)
+      if (buffer[(VGA_X * y) + x] == BLUE)
         b = 255;
-      if (buffer[(VGA_X*y) + x] == GREEN)
+      if (buffer[(VGA_X * y) + x] == GREEN)
         g = 255;
-      if (buffer[(VGA_X*y) + x] == YELLOW){
+      if (buffer[(VGA_X * y) + x] == YELLOW) {
         r = 255;
         g = 255;
       }

@@ -9,9 +9,9 @@ struct LINE_H {
   int y;
   std::string colour;
 
-  void print(){
-    std::cout << "LINE_H: " << x1 << ", " << x2 << ", "
-              << y << ", " << colour << std::endl;
+  void print() {
+    std::cout << "LINE_H: " << x1 << ", " << x2 << ", " << y << ", " << colour
+              << std::endl;
   }
 };
 
@@ -21,9 +21,9 @@ struct LINE_V {
   int y2;
   std::string colour;
 
-  void print(){
-    std::cout << "LINE_V: " << x << ", " << y1 << ", "
-              << y2 << ", " << colour << std::endl;
+  void print() {
+    std::cout << "LINE_V: " << x << ", " << y1 << ", " << y2 << ", " << colour
+              << std::endl;
   }
 };
 
@@ -34,11 +34,10 @@ struct RECT {
   int y2;
   std::string colour;
 
-  void print(){
-    std::cout << "RECT: " << x1 << ", " << x2 << ", " << y1
-              << ", " << y2 << ", " << colour << std::endl;
+  void print() {
+    std::cout << "RECT: " << x1 << ", " << x2 << ", " << y1 << ", " << y2
+              << ", " << colour << std::endl;
   }
 };
-
 
 #endif

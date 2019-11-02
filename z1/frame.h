@@ -1,47 +1,65 @@
 #ifndef _FRAME_H
 #define _FRAME_H
 
-#include <unistd.h>
-#include <sys/mman.h>
+#include <algorithm>
+#include <cstdlib>
 #include <fcntl.h>
-
-#include <vector>
+#include <iostream>
+#include <stdlib.h>
 #include <string>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <vector>
+
 #include "shapes.h"
-#include <cstring>
 
 #define VGA_X 640
 #define VGA_Y 480
-#define MAX_MMAP_SIZE (VGA_X*VGA_Y*sizeof(unsigned int))
+#define MAX_MMAP_SIZE (VGA_X * VGA_Y * sizeof(unsigned int))
 
 #define BLUE 0x001F
 #define GREEN 0x07E0
 #define RED 0xF800
 #define BLACK 0x0000
-#define YELLOW (RED+GREEN)
+#define YELLOW (RED + GREEN)
 
 template <class T> int swap(T *v1, T *v2);
 template <class T> inline T saturate(T in, T low, T high);
 int get_colour(const std::string c);
 
 class Frame {
-public:
+private:
   std::string bckg;
+  std::string dev_fn;
   std::vector<LINE_H> lines_h;
   std::vector<LINE_V> lines_v;
   std::vector<RECT> rects;
   int *buffer;
+  int fd;
 
-  Frame() : bckg("BLACK"){
+public:
+  Frame(std::string fn = "/dev/vga_dma") : bckg("BLACK"), dev_fn(fn) {
 #ifdef DEBUG
-    buffer = new int[VGA_X*VGA_Y];
-    memset(buffer, 0, sizeof(buffer[0]) * VGA_Y * VGA_X);
+    buffer = new int[VGA_X * VGA_Y]();
 #else
+    fd = open(dev_fn.c_str(), O_RDWR | O_NDELAY);
+    if (fd < 0) {
+      std::cout << "Cannot open " << dev_fn << "\n";
+      exit(EXIT_FAILURE);
+    } else
+      buffer = (int *)mmap(0, MAX_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
+                           fd, 0);
 #endif
   }
 
-  ~Frame(){
-    delete []buffer;
+  ~Frame() {
+#ifndef DEBUG
+    munmap(buffer, MAX_MMAP_SIZE);
+    close(fd);
+    if (fd < 0)
+      std::cout << "Cannot close " << dev_fn << "\n";
+#endif
+    delete[] buffer;
   }
   void print();
 
@@ -56,10 +74,7 @@ public:
   void draw_line_v(const LINE_V line);
   void draw_rect(const RECT r);
 
-  int send_frame();
   void dump_ppm(const std::string fn);
-
 };
-
 
 #endif
