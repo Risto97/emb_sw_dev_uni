@@ -53,7 +53,8 @@ public:
   }
 
   ~Frame() {
-#ifndef DEBUG
+#ifdef DEBUG
+#else
     munmap(buffer, MAX_MMAP_SIZE);
     close(fd);
     if (fd < 0)
