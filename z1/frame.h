@@ -40,26 +40,25 @@ private:
 public:
   Frame(std::string fn = "/dev/vga_dma") : bckg("BLACK"), dev_fn(fn) {
 #ifdef DEBUG
-    buffer = new int[VGA_X * VGA_Y]();
+buffer = new int[VGA_X * VGA_Y]();
+fd = shm_open("vga_buffer", O_RDWR, 0666);
 #else
-    fd = open(dev_fn.c_str(), O_RDWR | O_NDELAY);
+ fd = open(dev_fn.c_str(), O_RDWR | O_NDELAY);
+#endif
     if (fd < 0) {
       std::cout << "Cannot open " << dev_fn << "\n";
       exit(EXIT_FAILURE);
-    } else
+    } else{
       buffer = (int *)mmap(0, MAX_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
                            fd, 0);
-#endif
+    }
   }
 
   ~Frame() {
-#ifndef DEBUG
     munmap(buffer, MAX_MMAP_SIZE);
     close(fd);
     if (fd < 0)
       std::cout << "Cannot close " << dev_fn << "\n";
-#endif
-    delete[] buffer;
   }
   void print();
 
