@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <asm-generic/errno.h>
 #include <asm-generic/socket.h>
 #include <bits/types/siginfo_t.h>
@@ -73,11 +74,13 @@ int main() {
       }
       /* If accept() was succesfull, new client is connected */
       else {
+        std::string cli_ip_str = inet_ntoa(cli_addr.sin_addr);
         /* Revert socket config to BLOCKING */
         int flags = fcntl(newsockfd, F_GETFL, 0);
         fcntl(sockfd, F_SETFL, flags & (~O_NONBLOCK));
         int first_free = first_free_sec(pids, 4);
-        std::cout << "Client connected to section " << sec_n_to_str(first_free)
+        std::cout << "Client with IP: " << cli_ip_str
+                  << " connected to section " << sec_n_to_str(first_free)
                   << "\n";
         int pid = fork();
         if (pid < 0) {
