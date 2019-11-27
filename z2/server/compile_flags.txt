@@ -2,3 +2,4 @@
 -Iinclude
 -DMY_DEBUG_FLAG
 -I../../z1
+-I../common

@@ -8,6 +8,8 @@ TARGET   := program
 INCLUDE  := -Iinclude/ -I../../z1/
 SRC      :=  $(wildcard *.cc)
 SRC			 += ../../z1/frame.cc
+SRC      +=  $(wildcard ../common/*.cc)
+INCLUDE  += -Iinclude/ -I../common/
 
 OBJECTS := $(SRC:%.cc=$(OBJ_DIR)/%.o)
 
