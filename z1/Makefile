@@ -1,5 +1,5 @@
 CXX      := -g++
-CXXFLAGS := -Wall -Wextra -std=c++11
+CXXFLAGS := -Wall -Wextra -std=c++11 -lrt
 LDFLAGS  := -L/usr/lib -lstdc++ -lm
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
@@ -18,7 +18,7 @@ $(OBJ_DIR)/%.o: %.cc
 
 $(APP_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LDFLAGS) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDE) $(LDFLAGS) -o $(APP_DIR)/$(TARGET)
 
 .PHONY: all build clean debug release
 
