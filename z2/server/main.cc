@@ -1,7 +1,9 @@
 #include <arpa/inet.h>
+#ifdef DEBUG
 #include <asm-generic/errno.h>
 #include <asm-generic/socket.h>
 #include <bits/types/siginfo_t.h>
+#endif
 #include <cstdio>
 #include <cstdlib>
 #include <dirent.h>
