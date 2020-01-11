@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+// Redefine where Gradle should expect Java source files (*.java)
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+        }
+    }
+}
+
+// Specify main class to be executed
+mainClassName = "z3.examples.Main"
+defaultTasks 'compileJava', 'run'
+
+task myRun(type: JavaExec) {
+  group = 'Run'
+
+  classpath sourceSets.main.runtimeClasspath // <-- Don't change this
+  main = "z3.examples.Main"
+  args "arg1", "/tools/work/emb_sw_dev_uni/z3/dir/"
+}
